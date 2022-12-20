@@ -1,0 +1,22 @@
+{
+  "name": "drones_project",
+  "version": "1.0.0",
+  "description": "An application to detect people who have violated no drone zones",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node backend/server.js",
+    "server":  "nodemon backend/server.js"
+  },
+  "author": "Adeola Ikuesan",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
