@@ -1,14 +1,15 @@
-const mongoose = require('mongoose')
-mongoose.set('strictQuery', false);
+const { Client } = require('pg');
 
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI)
-    console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline)
-  } catch (error) {
-    console.log(error)
-    process.exit(1)
+const client = new Client({
+  connectionString: 'postgres://postgres:postgress@localhost:5433/postgres'
+});
+
+client.connect((err) => {
+  if (err) {
+    console.error('Error connecting to database:', err.stack);
+  } else {
+    console.log('Connected to database');
   }
-}
+});
 
-module.exports = connectDB
+module.exports = client;

@@ -1,1 +1,1 @@
-GET assignments.reaktor.com/birdnest/pilots/SN-LH8q-QoKGO
+GET https://assignments.reaktor.com/birdnest/pilots/SN-aqtgZ1oPJl

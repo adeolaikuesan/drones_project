@@ -1,86 +1,32 @@
 const express = require('express')
 const router = express.Router()
-const dataController = require('../controllers/droneController');
+const droneController = require('../controllers/droneController');
 const axios = require('axios');
-// const Pilot = require('../models/pilotModel')
+const client = require('../config/db');
+const console = require('console');
 
-// GET All flying drones
-// const getData = () => {
-//     router.get('/data', dataController.getData);
-//   };
-  
-// setInterval(getData, 2000);
+const app = express();
+const cors = require('cors')
 
-router.get('/data', (req, res) => {
-  axios.get('http://assignments.reaktor.com/birdnest/drones')
-    .then(response => {
-      dataController.handleDroneData(response, (droneData) => {
-        res.send(droneData);
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).send({ message: error.message });
-    });
+// Allow Cors
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:5000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
-//   const getData = () => {
-//     router.get('/data', (req, res) => {
-//       dataController.getData(req, res, (violatingDrones) => {
-//         const droneData = "JSON.parse(req.body.droneData);"
-//         // const droneData = JSON.parse(req.body.droneData);
-//         const serialNumbers = violatingDrones.map(drone => drone.serialNumber);
-//         res.send({ droneData, violatingDrones, serialNumbers });
-//       });
-//     });
-//   };
-  
-//   setInterval(getData, 2000);
-  
+// GET all data
+router.get('/', droneController.getData);
 
-// // GET Pilot
-// router.get("/pilots/:serialNumber", async (req, res) => {
-//     try {
-//         const pilots = await Pilot.find()
-//         if (pilots.length === 0) {
-//             console.log("No found Pilots")
-//             return res.status(204).json()
-//         }
-//         return res.json(pilots)
-//     } catch (error) {
-//         res.json(error)
-//     }
-// })
+// GET all pilots from DB
+router.get('/pilots', droneController.getPilots)
 
-// // POST Add pilot to DB
-// router.post("/pilots/:serialNumber", async (req, res) => {
-//     const pilotFound = await Pilot.findOne({ url: req.body.url })
-//     if (pilotFound) {
-//         return res.status(301).json({ message: "The URL already exists" })
-//     }
+// Maybe add a query to db?
+router.post('/delete', droneController.deletePilot)
 
-//     const pilot = new Pilot(req.body)
-//     const savedPilot = await pilot.save()
-//     res.json(savedPilot)
-// })
+// Insert pilot to database
+// router.get('/pilots/:serialNumber', droneController.createPilot)
 
-// // DELETE Pilot from DB
-// router.delete("/pilots/:serialNumber", async (req, res) => {
-//     try {
-//         const pilotDeleted = await Pilot.findByIdAndDelete(req.params.id)
-//         if (!pilotDeleted) {
-//             console.log("No Found Pilot")
-//             return res.status(204).json()
-//         }
-//         console.log("Deleted Pilot")
-//         return res.json(pilotDeleted)
-//     } catch (error) {
-//         res.json(error)
-//     }
-// })
-
-
-// const serialNumbers = ['SN-NwWEWCwbil', 'SN-LH8q-QoKGO'];
-// router.get('/data/pilots', dataController.getPilot(serialNumbers));
+router.post('/drones', droneController.createPilot)
 
 module.exports = router;

@@ -59,7 +59,7 @@ const ChartPlot = () => {
             .attr('r', 6) // radius is 2
 
             const even = svg.selectAll().data(data).filter(i => i < 0.5)
-            console.log(even)
+            // console.log(even)
       }, [])
     
     // const distances =  data.map( i => Math.sqrt( (0.5 - i[0])*(0.5 - i[0]) + (0.5 - i[1])*(0.5 - i[1])))

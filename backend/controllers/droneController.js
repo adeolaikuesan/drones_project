@@ -3,8 +3,7 @@
 // import axios from 'axios';
 const axios = require('axios');
 const xml2js = require('xml2js');
-const Pilot = require('../models/pilotModel')
-
+const client = require('../config/db');
 
 exports.getData = (req, res, callback) => {
     axios.get('http://assignments.reaktor.com/birdnest/drones')
@@ -39,12 +38,14 @@ exports.getData = (req, res, callback) => {
             result.push({timeStamp, serialNumber, distance });
             // console.log(result)
           }
-      
           // If drone is closer than 100 m from the origin
           const violatingDrones = result.filter(i => i.distance < 100000)
-          // console.log(violatingDrones)
-          callback(violatingDrones);
-          res.send({droneData : droneData , violatingDrones : violatingDrones})
+
+          const response = {
+            droneData: droneData,
+            violatingDrones: violatingDrones
+          };
+          res.send(response);
         }
        })
     })
@@ -52,4 +53,62 @@ exports.getData = (req, res, callback) => {
       console.log(error);
       res.status(500).send({ message: error.message });
     });
+};
+
+exports.getPilots = (req, res) => {
+  // Get all columns from Pilot Table
+  // The columns of the table are: pilotId, firstName, lastName, phoneNumber, createdDt, email, serialNumber, distance and timeStamp
+
+  client.query('SELECT * FROM public."Pilots"', (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("Error occured")
+    } else {
+      res.status(200).send(result.rows);
+    }
+  });
+};
+
+
+exports.createPilot = async (req, res) => {
+  try {
+    const violatingDrones = req.body.violatingDrones;
+    for(let i = 0; i < violatingDrones.length; i++) {
+      const { serialNumber, distance, timeStamp } = violatingDrones[i];
+      const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${serialNumber}`);
+      const { pilotId, firstName, lastName, phoneNumber, createdDt, email } = response.data;
+
+      await client.query(
+        `INSERT INTO public."Pilots" ("serialNumber", "pilotId", "firstName", "lastName", "phoneNumber", "createdDt", "email", "timeStamp", "distance") 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [serialNumber, pilotId, firstName, lastName, phoneNumber, createdDt, email, timeStamp, distance],
+      );
+    }
+    res.status(201).send({ message: 'Data inserted successfully' });
+  } catch (error) {
+    if (error.code === '23505') {
+      // This error message indicates that serialNumber number exists already (unique violation) so let's not throw an error.
+      // console.log('SerialNumber already exists')
+      // res.status(409).send({ message: 'SerialNumber already exists' });
+  } else {
+    console.log(error)
+    res.status(500).send({ message: 'Error inserting data', error });
+  }
+  }
+};
+
+
+exports.deletePilot = (req, res) => {
+  // If ten minutes has passed, delete row from database
+  console.log("here");
+  client.query(
+    `DELETE FROM public."Pilots" WHERE "timeStamp" < (now() - interval '10 minutes')`,
+    (err, results) => {
+      if (err) {
+        // if there was an error, log the error message
+        console.error(err);
+      }
+    // if the deletion was successful, send a 200 OK status code and the deleted data as the response
+    res.status(200).send(results);
+  });
 };
