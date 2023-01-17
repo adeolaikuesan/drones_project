@@ -6,48 +6,48 @@ const xml2js = require('xml2js');
 const client = require('../config/db');
 
 exports.getData = (req, res, callback) => {
-    axios.get('http://assignments.reaktor.com/birdnest/drones')
-    .then(response => {
-      xml2js.parseString(response.data, (err, result) => {
-        const droneData = JSON.stringify(result);
+  axios.get('http://assignments.reaktor.com/birdnest/drones')
+  .then(response => {
+    xml2js.parseString(response.data, (err, result) => {
+      const droneData = JSON.stringify(result);
 
-        const timeStamp = result.report.capture.map(i => i.$.snapshotTimestamp)
-        // console.log(timeStamp)
-        const allDrones = result.report.capture.map(_ => _.drone.map( x => ({serialNumber: x.serialNumber, positionX: x.positionX, positionY: x.positionY})))
-        // console.log(allDrones)
+      const timeStamp = result.report.capture.map(i => i.$.snapshotTimestamp)
+      // console.log(timeStamp)
+      const allDrones = result.report.capture.map(_ => _.drone.map( x => ({serialNumber: x.serialNumber, positionX: x.positionX, positionY: x.positionY})))
+      // console.log(allDrones)
 
-        allDrones.forEach(i => getDistanceAndSerialNumber(i));
+      allDrones.forEach(i => getDistanceAndSerialNumber(i));
 
-        function getDistanceAndSerialNumber(obj) {
-          // Create an empty result array
-          const result = [];
-          
-          // Loop through each object in the input array
-          for (const item of obj) {
-            // Extract the serial number and position coordinates
-            const serialNumber = item.serialNumber[0];
-            const positionX = parseFloat(item.positionX[0]);
-            const positionY = parseFloat(item.positionY[0]);
+      function getDistanceAndSerialNumber(obj) {
+        // Create an empty result array
+        const result = [];
         
-            // Calculate the distance between the given point and (250000, 250000)
-            const distance = Math.sqrt(
-              Math.pow(250000 - positionX, 2) + Math.pow(250000 - positionY, 2)
-            );
-        
-            // Add the time stamp, serial number and distance to the result array
-            result.push({timeStamp, serialNumber, distance });
-            // console.log(result)
-          }
-          // If drone is closer than 100 m from the origin
-          const violatingDrones = result.filter(i => i.distance < 100000)
-
-          const response = {
-            droneData: droneData,
-            violatingDrones: violatingDrones
-          };
-          res.send(response);
+        // Loop through each object in the input array
+        for (const item of obj) {
+          // Extract the serial number and position coordinates
+          const serialNumber = item.serialNumber[0];
+          const positionX = parseFloat(item.positionX[0]);
+          const positionY = parseFloat(item.positionY[0]);
+      
+          // Calculate the distance between the given point and (250000, 250000)
+          const distance = Math.sqrt(
+            Math.pow(250000 - positionX, 2) + Math.pow(250000 - positionY, 2)
+          );
+      
+          // Add the time stamp, serial number and distance to the result array
+          result.push({timeStamp, serialNumber, distance });
+          // console.log(result)
         }
-       })
+        // If drone is closer than 100 m from the origin
+        const violatingDrones = result.filter(i => i.distance < 100000)
+
+        const response = {
+          droneData: droneData,
+          violatingDrones: violatingDrones
+        };
+        res.send(response);
+      }
+     })
     })
     .catch((error) => {
       console.log(error);
@@ -70,11 +70,63 @@ exports.getPilots = (req, res) => {
 };
 
 
-exports.createPilot = async (req, res) => {
+
+
+// Hae data APIsta, jos on violating drones, lisää tietokantaan.
+exports.getAll = (req, res) => {
+  axios.get('http://assignments.reaktor.com/birdnest/drones')
+  .then(response => {
+    xml2js.parseString(response.data, (err, result) => {
+      const droneData = JSON.stringify(result);
+
+      const timeStamp = result.report.capture.map(i => i.$.snapshotTimestamp)
+      // console.log(timeStamp)
+      const allDrones = result.report.capture.map(_ => _.drone.map( x => ({serialNumber: x.serialNumber, positionX: x.positionX, positionY: x.positionY})))
+      // console.log(allDrones)
+
+      allDrones.forEach(i => getDistanceAndSerialNumber(i));
+
+      function getDistanceAndSerialNumber(obj) {
+        // Create an empty result array
+        const result = [];
+        
+        // Loop through each object in the input array
+        for (const item of obj) {
+          // Extract the serial number and position coordinates
+          const serialNumber = item.serialNumber[0];
+          const positionX = parseFloat(item.positionX[0]);
+          const positionY = parseFloat(item.positionY[0]);
+      
+          // Calculate the distance between the given point and (250000, 250000)
+          const distance = Math.sqrt(
+            Math.pow(250000 - positionX, 2) + Math.pow(250000 - positionY, 2)
+          );
+      
+          // Add the time stamp, serial number and distance to the result array
+          result.push({timeStamp, serialNumber, distance });
+          // console.log(result)
+        }
+        // If drone is closer than 100 m from the origin
+        const violatingDrones = result.filter(i => i.distance < 100000)
+        if (violatingDrones.length > 0) {
+          // console.log("Send violating drones");
+        }
+        exports.createPilot(violatingDrones, res);
+      }
+     })
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    });
+};
+
+exports.createPilot = async (violatingDrones, res) => {
   try {
-    const violatingDrones = req.body.violatingDrones;
+    // const violatingDrones = req.body.violatingDrones;
     for(let i = 0; i < violatingDrones.length; i++) {
       const { serialNumber, distance, timeStamp } = violatingDrones[i];
+
       const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${serialNumber}`);
       const { pilotId, firstName, lastName, phoneNumber, createdDt, email } = response.data;
 
@@ -92,15 +144,15 @@ exports.createPilot = async (req, res) => {
       // res.status(409).send({ message: 'SerialNumber already exists' });
   } else {
     console.log(error)
-    res.status(500).send({ message: 'Error inserting data', error });
+    // res.status(500).send({ message: 'Error inserting data', error });
   }
   }
 };
 
 
+
 exports.deletePilot = (req, res) => {
   // If ten minutes has passed, delete row from database
-  console.log("here");
   client.query(
     `DELETE FROM public."Pilots" WHERE "timeStamp" < (now() - interval '10 minutes')`,
     (err, results) => {

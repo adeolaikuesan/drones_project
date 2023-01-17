@@ -1,10 +1,9 @@
 import React, {useEffect, useState }from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import axios from 'axios' 
 const moment = require('moment');
 
 const DataGridForPilots = ({ data }) => {
-
+  // console.log(data)
   // The columns of the table are: pilotId, firstName, lastName, phoneNumber, createdDt, email, serialNumber, distance, timeStamp
 
     const rows = data.map((row, index) => ({
@@ -22,7 +21,6 @@ const DataGridForPilots = ({ data }) => {
         {field: "name", headerName: "Name", flex: 2},
         {field: "phoneNumber", headerName: "Phone number", flex: 2},
         {field: "email", headerName: "Email", flex: 4},
-
     ];
 
     return (

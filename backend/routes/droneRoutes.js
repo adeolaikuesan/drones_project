@@ -1,12 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const droneController = require('../controllers/droneController');
-const axios = require('axios');
-const client = require('../config/db');
-const console = require('console');
 
-const app = express();
-const cors = require('cors')
 
 // Allow Cors
 router.use(function(req, res, next) {
@@ -16,17 +11,16 @@ router.use(function(req, res, next) {
 });
 
 // GET all data
-router.get('/', droneController.getData);
+router.get('/', droneController.getAll);
+
+// POST Inserts pilot to DB, is called inside g
+// router.post('/drones', droneController.createPilot)
 
 // GET all pilots from DB
 router.get('/pilots', droneController.getPilots)
 
-// Maybe add a query to db?
+// POST deletes all entries from DB where timeStamp is 
 router.post('/delete', droneController.deletePilot)
 
-// Insert pilot to database
-// router.get('/pilots/:serialNumber', droneController.createPilot)
-
-router.post('/drones', droneController.createPilot)
 
 module.exports = router;

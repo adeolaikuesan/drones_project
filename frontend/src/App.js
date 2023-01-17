@@ -8,55 +8,29 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 const App = () => {
 
   const [pilots, setPilots] = useState([]);
-  const [allDrones, setDrones] = useState([]);
   const [violatingDrones, setViolatingDrones] = useState([]);
 
-  const getData = async () => {
-    try {
-      const [response1, response2] = await Promise.all([
-          axios.get(`http://localhost:5000/pilots`),
-          axios.get(`http://localhost:5000`),
-      ]);
 
-      // console.log(response1.data) // pilots
-      // console.log(response2.data.violatingDrones) // violating drones
-      // console.log(response2.data.droneData) // allDrones
-      setPilots(response1.data)
-      setDrones(response2.data.droneData)
-
-      let violatingDrones = response2.data.violatingDrones
-      console.log(violatingDrones.length);
-      if (violatingDrones.length > 0) {
+    const getData = async () => {
+      try {
         console.log('ON')
-        axios.post(`http://localhost:5000/drones`, {
-          violatingDrones
+        axios.get(`http://localhost:5000/pilots`)
+        .then(response => {
+            setPilots(response.data);
         })
+        .catch(error => {
+            console.error(error);
+        });
+        setTimeout(getData, 2000);
       }
-      setTimeout(getData, 2000);
-    } catch (error) {
+      catch (error) {
         console.error(error);
+      }
     }
-  }
-
-  const deleteData = async () => {
-    try {
-      console.log("DELETE")
-      axios.post(`http://localhost:5000/delete`)
-      // setTimeout(deleteData, 2000);
-    } catch (error) {
-        console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    getData();
-    deleteData();
-  }, [])
 
   useEffect(() => {
     let timeoutId;
     timeoutId = setTimeout(getData, 2000);
-    // timeoutId = setTimeout(deleteData, 2000);
     return () => clearTimeout(timeoutId);
   }, [])
 
