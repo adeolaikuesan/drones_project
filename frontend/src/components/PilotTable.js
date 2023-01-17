@@ -16,16 +16,16 @@ const DataGridForPilots = ({ data }) => {
     }));
 
     const columns = [
-        {field: "violationTime", headerName: "Time of violation",flex: 2},
-        {field: "distance", headerName: "Distance (m)",flex: 2},
-        {field: "name", headerName: "Name", flex: 2},
-        {field: "phoneNumber", headerName: "Phone number", flex: 2},
+        {field: "violationTime", headerName: "Time of violation",flex: 2 },
+        {field: "distance", headerName: "Distance (m)",flex: 2 },
+        {field: "name", headerName: "Name", flex: 2 },
+        {field: "phoneNumber", headerName: "Phone number", flex: 2 },
         {field: "email", headerName: "Email", flex: 4},
     ];
 
     return (
         <div style={{ display: 'flex', height: '100%' , width: '100%' , minHeight: 600 }}>
-          <DataGrid rows={rows} columns={columns}  />
+          <DataGrid rows={rows} columns={columns} disableColumnSelector/>
         </div>
       );    
 }
