@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 setInterval(() => {
-    axios.get('http://localhost:5000')
+    axios.get('http://localhost:${process.env.PORT}')
         .then(response => {
             // console.log(response.data);
         })
@@ -9,7 +9,7 @@ setInterval(() => {
             console.log(error);
         });
 
-    axios.post('http://localhost:5000/delete')
+    axios.post('http://localhost:${process.env.PORT}/delete')
         .then(response => {
             // console.log(response.data);
         })
