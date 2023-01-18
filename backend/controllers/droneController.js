@@ -179,7 +179,7 @@ exports.createPilot = async (violatingDrones, res) => {
 exports.deletePilot = (req, res) => {
   // If ten minutes has passed, delete row from database
   client.query(
-    `DELETE FROM public."pilots" WHERE "timeStamp" < (now() - interval '10 minutes')`,
+    `DELETE FROM public."pilots" WHERE "timestamp" < (now() - interval '10 minutes')`,
     (err, results) => {
       if (err) {
         console.error(err);
