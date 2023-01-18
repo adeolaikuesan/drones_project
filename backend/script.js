@@ -1,5 +1,5 @@
 // const axios = require("axios");
-const droneController = require("../controllers/droneController");
+const droneController = require("./controllers/droneController");
 
 module.exports = callScript = () => {
   setInterval(() => {
