@@ -68,7 +68,7 @@ exports.getPilots = (req, res) => {
   // Get all columns from Pilot Table
   // The columns of the table are: pilotId, firstName, lastName, phoneNumber, createdDt, email, serialNumber, distance and timeStamp
 
-  client.query('SELECT * FROM public."Pilots"', (err, result) => {
+  client.query('SELECT * FROM public."pilots"', (err, result) => {
     if (err) {
       res.status(500).send(err);
       console.log(err);
@@ -149,7 +149,7 @@ exports.createPilot = async (violatingDrones, res) => {
         response.data;
 
       await client.query(
-        `INSERT INTO public."Pilots" ("serialNumber", "pilotId", "firstName", "lastName", "phoneNumber", "createdDt", "email", "timeStamp", "distance") 
+        `INSERT INTO public."pilots" ("serialNumber", "pilotId", "firstName", "lastName", "phoneNumber", "createdDt", "email", "timeStamp", "distance") 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
           serialNumber,
@@ -179,7 +179,7 @@ exports.createPilot = async (violatingDrones, res) => {
 exports.deletePilot = (req, res) => {
   // If ten minutes has passed, delete row from database
   client.query(
-    `DELETE FROM public."Pilots" WHERE "timeStamp" < (now() - interval '10 minutes')`,
+    `DELETE FROM public."pilots" WHERE "timeStamp" < (now() - interval '10 minutes')`,
     (err, results) => {
       if (err) {
         console.error(err);
