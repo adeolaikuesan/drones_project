@@ -5,7 +5,7 @@ const droneController = require("../controllers/droneController");
 // Allow Cors
 router.use(function (req, res, next) {
   // Temp hard coded
-  res.header("Access-Control-Allow-Origin", `https://frontend-production-d1d9.up.railway.app/`);
+  res.header("Access-Control-Allow-Origin", `https://railway.app/`);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
