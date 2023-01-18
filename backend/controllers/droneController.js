@@ -149,7 +149,7 @@ exports.createPilot = async (violatingDrones, res) => {
         response.data;
 
       await client.query(
-        `INSERT INTO public."pilots" ("serialNumber", "pilotId", "firstName", "lastName", "phoneNumber", "createdDt", "email", "timeStamp", "distance") 
+        `INSERT INTO public."pilots" ("serialnumber", "pilotid", "firstname", "lastname", "phonenumber", "createddt", "email", "timestamp", "distance") 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
           serialNumber,
