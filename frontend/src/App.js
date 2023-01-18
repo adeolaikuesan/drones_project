@@ -12,7 +12,7 @@ const App = () => {
     try {
       // Get pilots who have violated the NDZ from DB
       axios
-        .get(`${REACT_APP_BACKEND_BASEURL}/pilots`)
+        .get(`${process.env.REACT_APP_BACKEND_BASEURL}/pilots`)
         .then((response) => {
           setPilots(response.data);
         })
