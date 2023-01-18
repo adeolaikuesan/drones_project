@@ -71,7 +71,7 @@ exports.getPilots = (req, res) => {
   client.query('SELECT * FROM public."Pilots"', (err, result) => {
     if (err) {
       res.status(500).send(err);
-      console.log("Error occured");
+      console.log(err);
     } else {
       res.status(200).send(result.rows);
     }
