@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PilotTable from "./components/PilotTable";
-import Map from "./components/Map";
 import "./App.css";
 import axios from "axios";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 const App = () => {
   const [pilots, setPilots] = useState([]);
-  const [violatingDrones, setViolatingDrones] = useState([]);
 
   const getData = async () => {
     try {

@@ -54,10 +54,10 @@ const Map = () => {
       .attr("cy", (d) => yScale(d[1]))
       .attr("r", 6); // radius is 2
 
-    const even = svg
-      .selectAll()
-      .data(data)
-      .filter((i) => i < 0.5);
+    // const even = svg
+    //   .selectAll()
+    //   .data(data)
+    //   .filter((i) => i < 0.5);
     // console.log(even)
   }, []);
 
