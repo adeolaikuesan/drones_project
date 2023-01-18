@@ -4,6 +4,7 @@ import "./App.css";
 import axios from "axios";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
+
 const App = () => {
   const [pilots, setPilots] = useState([]);
 
@@ -11,7 +12,7 @@ const App = () => {
     try {
       // Get pilots who have violated the NDZ from DB
       axios
-        .get(`${process.env.BACKEND_BASEURL}/pilots`)
+        .get(`${REACT_APP_BACKEND_BASEURL}/pilots`)
         .then((response) => {
           setPilots(response.data);
         })
