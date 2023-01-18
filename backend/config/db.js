@@ -1,7 +1,7 @@
 const { Client } = require("pg");
 
 const client = new Client({
-  connectionString: "postgres://postgres:postgress@localhost:5433/postgres",
+  connectionString: process.env.CONNECTIONSTRING
 });
 
 client.connect((err) => {
