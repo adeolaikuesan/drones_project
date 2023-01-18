@@ -6,7 +6,7 @@ const DataGridForPilots = ({ data }) => {
   // console.log(data)
   // The columns of the table are: pilotId, firstName, lastName, phoneNumber, createdDt, email, serialNumber, distance, timeStamp
 
-    const rows = data.map((row, index) => ({
+    const rows = data?.map((row, index) => ({
         id : index,
         name: row.firstName + " "+  row.lastName,
         phoneNumber : row.phoneNumber,
