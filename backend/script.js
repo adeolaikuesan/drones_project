@@ -1,19 +1,22 @@
 const axios = require('axios');
 
-setInterval(() => {
-    axios.get(`http://localhost:${process.env.PORT}`)
-        .then(response => {
-            // console.log(response.data);
-        })
-        .catch(error => {
-            console.log(error);
-        });
+module.exports = callScript = () => {
 
-    axios.post(`http://localhost:${process.env.PORT}/delete`)
-        .then(response => {
-            // console.log(response.data);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-}, 2000);
+    setInterval(() => {
+        axios.get(`http://localhost:${process.env.PORT}`)
+            .then(response => {
+                // console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    
+        axios.post(`http://localhost:${process.env.PORT}/delete`)
+            .then(response => {
+                // console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, 2000);
+};
